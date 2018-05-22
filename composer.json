@@ -1,0 +1,13 @@
+{
+    "name": "farpost/upload",
+    "author": "Artyom Kotov <afyc@mail.ru>",
+    "description": "Сервис загрузки изображений",
+    "require": {
+        "league/plates": "3.*"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "Artemio\\" : "classes/"
+        }
+    }
+}
