@@ -6,7 +6,7 @@ use Artemio\services\{DatabaseConnect, ModelFactory};
 class BaseModel {
 
     /**
-     * @var \mysqli
+     * @var \PDO
      */
     public $db;
 
@@ -60,13 +60,13 @@ class BaseModel {
 
         if ($where) {
             $element =  current($where);
-			$stmt->bind_param('s', $element);
+			$stmt->bindParam(1, $element, \PDO::PARAM_STR);
         }
 
         $stmt->execute();
-        $res = $stmt->get_result();
+        //$res = $stmt->get_result();
 
-        while ($row = $res->fetch_object(static::class)) {
+        while ($row = $stmt->fetchObject(static::class)) {
             $row->setModelFactory($this->modelFactory);
             $rows[] = $row;
         }
@@ -78,14 +78,16 @@ class BaseModel {
         $result = $this->modelFactory->getEmptyModel(static::class);
         $sql = 'SELECT * FROM ' . static::$tableName . ' WHERE ' . key($where) . ' = ?';
 
+
         $stmt = $this->db->prepare($sql);
         $element =  current($where);
-		$stmt->bind_param('s', $element);
-        $stmt->execute();
-        $res = $stmt->get_result();
+        $stmt->bindParam(1, $element, \PDO::PARAM_STR);
+        //$stmt->execute();
+        //$res = $stmt->get_result();
 
-        if ($res) {
-            $result = $res->fetch_object(static::class);
+
+        if ($stmt->execute()) {
+            $result = $stmt->fetchObject(static::class);
 
             if ($result) {
                 $result->setModelFactory($this->modelFactory);

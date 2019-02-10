@@ -18,7 +18,10 @@ class UserModel extends BaseModel {
         $sql = 'INSERT INTO users (dt_add, email, name, password, token) VALUES (NOW(), ?, ?, ?, ?)';
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param('ssss', $email, $name, $password,  $token);
+        $stmt->bindParam(1, $email, \PDO::PARAM_STR);
+        $stmt->bindParam(2, $name, \PDO::PARAM_STR);
+        $stmt->bindParam(3, $password, \PDO::PARAM_STR);
+        $stmt->bindParam(4, $token, \PDO::PARAM_STR);
         $res = $stmt->execute();
 
         return $res;
@@ -28,7 +31,8 @@ class UserModel extends BaseModel {
         $sql = 'UPDATE ' . static::$tableName . ' SET token = ? WHERE id = ?';
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param('si', $token, $this->id);
+        $stmt->bindParam(1, $token, \PDO::PARAM_STR);
+        $stmt->bindParam(2, $this->id, \PDO::PARAM_INT);
         $res = $stmt->execute();
 
         return $res;

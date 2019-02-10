@@ -4,11 +4,10 @@ namespace Artemio\services;
 class DatabaseConnect {
 
     private static $instance;
-
     /**
-     * @var \mysqli
+     * @var \PDO
      */
-    private $mysqli;
+    private $pdo;
 
     public static function getInstance($params = null) {
         if (!self::$instance) {
@@ -19,16 +18,20 @@ class DatabaseConnect {
     }
 
     /**
-     * @return \mysqli
+     * @return \PDO
      */
     public function getDB() {
-        return $this->mysqli;
+        return $this->pdo;
     }
 
     private function __construct($params = null) {
         if ($params) {
-            $this->mysqli = new \mysqli($params['host'], $params['user'], $params['password'], $params['database']);
-            $this->mysqli->select_db($params['database']);
+            $dns = $params['driver'] .
+                ':host=' . $params['host'] .
+                ((!empty($params['port'])) ? (';port=' . $params['port']) : '') .
+                ';dbname=' . $params['database'];
+
+            $this->pdo = new \PDO($dns, $params['user'],$params['password'], $params['options']);
         }
     }
 }

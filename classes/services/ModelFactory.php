@@ -33,10 +33,10 @@ class ModelFactory {
         $sql = 'SELECT * FROM ' . $table . ' WHERE id = ? LIMIT 1';
 
         $stmt = $this->databaseConnect->getDB()->prepare($sql);
-        $stmt->bind_param('i', $id);
+        $stmt->bindParam(1, $id, \PDO::PARAM_INT);
         $stmt->execute();
 
-        $model = $stmt->get_result()->fetch_object($className);
+        $model = $stmt->fetchObject($className);
         $model->setDb($this->databaseConnect)->setModelFactory($this);
 
         return $model;
