@@ -28,6 +28,17 @@ class BaseModel {
         return $result;
     }
 
+    public function __sleep()
+    {
+        $fields = (array) $this;
+
+        unset($fields['db']);
+        // хак, т.к поле свойство protected
+        unset($fields["\0" . '*' . "\0" . 'modelFactory']);
+
+        return array_keys($fields);
+    }
+
     public function getTableName() {
         return static::$tableName;
     }
@@ -64,7 +75,6 @@ class BaseModel {
         }
 
         $stmt->execute();
-        //$res = $stmt->get_result();
 
         while ($row = $stmt->fetchObject(static::class)) {
             $row->setModelFactory($this->modelFactory);
@@ -78,13 +88,9 @@ class BaseModel {
         $result = $this->modelFactory->getEmptyModel(static::class);
         $sql = 'SELECT * FROM ' . static::$tableName . ' WHERE ' . key($where) . ' = ?';
 
-
         $stmt = $this->db->prepare($sql);
         $element =  current($where);
         $stmt->bindParam(1, $element, \PDO::PARAM_STR);
-        //$stmt->execute();
-        //$res = $stmt->get_result();
-
 
         if ($stmt->execute()) {
             $result = $stmt->fetchObject(static::class);

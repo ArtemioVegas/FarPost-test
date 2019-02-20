@@ -23,11 +23,17 @@ class BaseController {
      */
     protected $user;
 
+    /**
+     * @var array
+     */
     protected $rules = [
         'guest' => ["/image/add","/image/all", "/logout"],
         'user'  => ["/signin", "/signup"]
     ];
 
+    /**
+     * @var string
+     */
     protected $pageTitle;
 
     public function __construct(Engine $templateEngine, ModelFactory $modelFactory) {

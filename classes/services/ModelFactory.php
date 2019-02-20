@@ -47,4 +47,9 @@ class ModelFactory {
             $this->databaseConnect = $databaseConnect;
         }
     }
+
+    public function getDatabaseConnect()
+    {
+        return $this->databaseConnect;
+    }
 }

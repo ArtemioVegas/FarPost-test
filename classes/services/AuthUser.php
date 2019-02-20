@@ -21,9 +21,7 @@ class AuthUser {
      * @param ModelFactory $modelFactory
      */
     public function __construct($userModelClass, ModelFactory $modelFactory) {
-        $this->userModel = $userModelClass;
         $this->modelFactory = $modelFactory;
-
         $this->userModel = $this->modelFactory->getEmptyModel($userModelClass);
     }
 
@@ -53,10 +51,14 @@ class AuthUser {
             }
         }
 
-        $user = $_SESSION['user'] ?? $this->userModel;
-        $this->userModel = $user;
+        if (isset($_SESSION['user'])) {
+            $this->userModel = $_SESSION['user'];
+            // хаки для внедрения инстанса PDO после десериализации
+            $this->userModel->setDb($this->modelFactory->getDatabaseConnect());
+            $this->userModel->setModelFactory($this->modelFactory);
+        }
 
-        return $user;
+        return $this->userModel;
     }
 
     public function loginByEmail($email) {
